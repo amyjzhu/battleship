@@ -1,9 +1,11 @@
 package ui;
 
+import game.Board;
 import game.Game;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,16 +31,16 @@ public class GameFrame extends JFrame {
         topLevelPane.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         setTitle("Battleship");
-        setSize(600, 1200);
+        setSize(700, 1400);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         this.game = game;
-        enemyBoardFrame = new BoardFrame(Game.getPlayerTwo().getBoard());
-        enemyBoardFrame.getBoard().generateAllShips();
-        enemyBoardFrame.setIsClickable(false);
+        enemyBoardFrame = createBoardFrame(Game.getPlayerTwo().getBoard(), "Enemy Board");
         topLevelPane.add(enemyBoardFrame);
 
-        yourBoardFrame = new BoardFrame(Game.getPlayerOne().getBoard());
+        topLevelPane.add(addTitleLabel("Your ships"));
+
+        yourBoardFrame = createBoardFrame(Game.getPlayerOne().getBoard(), "Your Board");
         enemyBoardFrame.setIsClickable(true);
         topLevelPane.add(yourBoardFrame);
 
@@ -48,6 +50,26 @@ public class GameFrame extends JFrame {
         this.add(topLevelPane);
 
         setVisible(true);
+    }
+
+    public BoardFrame createBoardFrame(Board board, String title) {
+        BoardFrame frame = new BoardFrame(board);
+        frame.getBoard().generateAllShips();
+        frame.setIsClickable(false);
+        TitledBorder border = new TitledBorder(title);
+        border.setTitleJustification(TitledBorder.CENTER);
+        border.setTitlePosition(TitledBorder.TOP);
+        border.setTitleFont(new Font("Arial", Font.ITALIC, 20));
+
+        frame.setBorder(border);
+
+        return frame;
+    }
+
+    public JLabel addTitleLabel(String text) {
+        JLabel label = new JLabel();
+        label.setText(text);
+        return label;
     }
 
     public JButton makeAttackButton() {

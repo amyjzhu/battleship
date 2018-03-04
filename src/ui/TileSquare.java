@@ -19,6 +19,7 @@ public class TileSquare extends JButton {
         //this.setSize(100,100); // SET SMALLER WITH LOWER DPI
         //this.setPreferredSize(new Dimension(100,100)); // WHich one??
         this.tile = tile;
+        this.setText(Tile.fromIndex(tile.getTileIndex()));
         setOpaque(true);
         this.setBackground(GameFrame.CELL_COLOUR); // change this to be customizable
         this.setForeground(GameFrame.BG_COLOUR);

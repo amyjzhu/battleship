@@ -28,7 +28,7 @@ public class Tile {
         return status;
     }
 
-    int getTileIndex() {
+    public int getTileIndex() {
         return tileIndex;
     }
 

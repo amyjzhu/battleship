@@ -30,6 +30,7 @@ public class BoardFrame extends JPanel {
     public BoardFrame(Board thisBoard) {
         board = thisBoard;
         this.setLayout(new GridLayout(Game.BOARD_SIZE, Game.BOARD_SIZE, HGAP, VGAP));
+
         tiles = Arrays.stream(board.getTiles()).map(TileSquare::new).collect(Collectors.toList());
         tiles.forEach(tileSquare -> {
             //tileSquare.addBoardFrame(this);
