@@ -13,9 +13,27 @@ public class Game {
     private static Player playerOne;
     private static Player playerTwo;
     private static int turnNumber;
+    private static Phase phase;
+
+    public enum Phase {
+        SETUP,
+        PLAY
+    }
 
     public Game() {
         setup();
+    }
+
+    public static boolean inSetup() {
+        return phase == Phase.SETUP;
+    }
+
+    public static boolean inPlay() {
+        return phase == Phase.PLAY;
+    }
+
+    public static void setPhase(Phase phase) {
+        Game.phase = phase;
     }
 
     public static Player getPlayerOne() {
@@ -33,6 +51,7 @@ public class Game {
     }
 
     public static void setup() {
+        phase = Phase.SETUP;
         playerOne = new HumanPlayer();
         playerTwo = new ComputerPlayer();
         playerOne.setTurn(true);
@@ -40,7 +59,8 @@ public class Game {
     }
 
     public static void arrangeBoard() {
-
+        // get a list of pieces
+        playerOne.setTurn(true);
     }
 
     public static void runRound() {

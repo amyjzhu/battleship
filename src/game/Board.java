@@ -20,6 +20,11 @@ public class Board {
         ships = new ArrayList<>();
     }
 
+    public boolean isPopulated() {
+        return // DO A REAL CHECK
+        ships.size() == Ship.Type.values().length;
+    }
+
     public Tile[] getTiles() {
         return boardPieces;
     }

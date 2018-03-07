@@ -15,6 +15,10 @@ import java.awt.event.ActionListener;
  */
 public class GameFrame extends JFrame {
 
+    // selection mode handler
+    // overing highlights adjacent tiles
+    // go down or horizontal
+
     public static final Color BG_COLOUR = Color.BLACK;
     public static final Color CELL_COLOUR = new Color(233,185,254);
     public static final Color BUTTON_COLOUR = new Color(232, 220, 239);

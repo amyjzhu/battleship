@@ -40,6 +40,7 @@ public class Tile {
         status = Status.MISS;
     }
 
+    // TODO use optional
     public boolean canGetAdjacentTile(Direction direction) {
         if (direction.equals(Direction.LEFT)) {
             return tileIndex % Game.BOARD_SIZE != 0;
@@ -67,6 +68,10 @@ public class Tile {
         }
 
         return -1;
+    }
+
+    public boolean hasNTilesInDirection(int n, Direction direction) {
+        return canGetAdjacentTile(direction) && hasNTilesInDirection(n-1, direction);
     }
 
 

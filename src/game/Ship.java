@@ -20,7 +20,7 @@ public class Ship {
             this.size = size;
         }
 
-        int getSize() {
+        public int getSize() {
             return size;
         }
     }
