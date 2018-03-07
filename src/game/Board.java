@@ -82,6 +82,11 @@ public class Board {
         }
     }
 
+    public boolean areNSpacesInXDirectionFree(int n, Tile.Direction x) {
+        // TODO just use Tile implementation and use this to make sure placements are valid in UI
+        return false;
+    }
+
     public List<Tile> getFreeSpaces() {
         List<Integer> used = new ArrayList<>();
         ships.forEach(ship -> used.addAll(ship.getLocations()));

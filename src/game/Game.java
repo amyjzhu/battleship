@@ -44,12 +44,6 @@ public class Game {
         return playerTwo;
     }
 
-    public static void main(String[] args) {
-        Board enemyBoard = new Board();
-        enemyBoard.generateAllShips();
-        System.out.println(enemyBoard);
-    }
-
     public static void setup() {
         phase = Phase.SETUP;
         playerOne = new HumanPlayer();

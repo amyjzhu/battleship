@@ -40,6 +40,7 @@ public class GameFrame extends JFrame {
 
         this.game = game;
         enemyBoardFrame = createBoardFrame(Game.getPlayerTwo().getBoard(), "Enemy Board");
+        enemyBoardFrame.disableSelection();
         topLevelPane.add(enemyBoardFrame);
 
         topLevelPane.add(addTitleLabel("Your ships"));

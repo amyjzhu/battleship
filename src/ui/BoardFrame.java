@@ -30,6 +30,7 @@ public class BoardFrame extends JPanel {
     private List<TileSquare> tilesSelectedForShip = new ArrayList<>();
     private boolean clickable;
     private boolean isSetup = true;
+    private TileSelectionHandler mouseHandler;
 
     // TODO polymorphism?
 
@@ -41,6 +42,7 @@ public class BoardFrame extends JPanel {
         //tiles = Arrays.stream(board.getTiles()).map(TileSquare::new).collect(Collectors.toList());
         tiles = new ArrayList<>();
         tilesToSquares = new HashMap<>();
+        mouseHandler = new TileSelectionHandler();
         Arrays.stream(board.getTiles()).forEach(tile -> {
             //tileSquare.addBoardFrame(this);
             TileSquare tileSquare = new TileSquare(tile);
@@ -51,9 +53,11 @@ public class BoardFrame extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     attackHandler(tileSquare);
                 }}); // want tiles to be listenning for attacks but only if it's the right turn // should also have an ATTACK button
+            tileSquare.addMouseListener(mouseHandler);
+
         });
 
-        addMouseListener(new TileSelectionHandler());
+        addMouseListener(mouseHandler);
     }
 
     public void attackHandler(TileSquare tileSquare) {
@@ -71,25 +75,45 @@ public class BoardFrame extends JPanel {
 
     }
 
+    public void disableSelection() {
+        mouseHandler.disableSelection();
+    }
+
     private class TileSelectionHandler implements MouseListener {
 
         private boolean selectionTime = true;
-        private List<Ship.Type> types = new ArrayList(Arrays.asList(Ship.Type.values())); // TODO move selection list into this class
+        private List<Ship.Type> types = new LinkedList(Arrays.asList(Ship.Type.values())); // TODO move selection list into this class
+        private Tile.Direction direction = Tile.Direction.DOWN;
 
         public void disableSelection() {
             selectionTime = false;
+        }
+
+        private void swapDirection() {
+            if (direction == Tile.Direction.DOWN) {
+                direction = Tile.Direction.RIGHT;
+            } else if (direction == Tile.Direction.RIGHT) {
+                direction = Tile.Direction.DOWN;
+            } // TODO cleaner way - maybe boolean ^=?
         }
         // only if
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            System.out.println("Clicked!!");
-            Ship.Type type = types.get(0);
-            verifyShip(type);
-            types.remove(type);
+            if (SwingUtilities.isRightMouseButton(e)) {
+                swapDirection();
+                return;
+            }
 
-            if (types.isEmpty()) {
-                disableSelection();
+            if (selectionTime) {
+                System.out.println("Clicked!!");
+                Ship.Type type = types.get(0);
+                verifyShip(type);
+                types.remove(type);
+
+                if (types.isEmpty()) {
+                    disableSelection();
+                }
             }
         }
 
@@ -106,56 +130,72 @@ public class BoardFrame extends JPanel {
         @Override
         public void mouseEntered(MouseEvent e) {
             System.out.println("mouseover!!");
+            if (selectionTime) {
 
-            Component component = e.getComponent();
-            if (component instanceof TileSquare) { //make sure it's this board's tile square also!
-                selectAShip((TileSquare) component, types.get(0));
+                Component component = e.getComponent();
+                if (component instanceof TileSquare) { //make sure it's this board's tile square also!
+                    selectAShip((TileSquare) component, types.get(0));
+                }
             }
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
             System.out.println("mouseout!!");
-
-            deselectShip();
+            if (selectionTime) {
+                deselectShip();
+            }
         }
-    }
 
-    public void selectAShip(TileSquare tileFrame, Ship.Type shipType) {
-        // vertical or horiztonal...
-        Tile tile = tileFrame.getTile();
-        int tileindex = tile.getTileIndex();
-        if (tile.hasNTilesInDirection(shipType.getSize() - 1, Tile.Direction.DOWN)) {
-            for (int i = 0; i < shipType.getSize(); i++) {
-                TileSquare tileSquareToSelect = tilesToSquares.get(new Tile(tileindex));
-                tileSquareToSelect.setSelected(true);
-                tilesSelectedForShip.add(tileSquareToSelect);
-                int newIndex = tile.getNextTileIndex(Tile.Direction.DOWN);
-                if (newIndex != -1) {
-                    tileindex = newIndex;
-                } else {
-                    break;
-                }
-            } // can only enter when
-            // can only click if number is matching
+
+        public void selectAShip(TileSquare tileFrame, Ship.Type shipType) {
+            // vertical or horiztonal...
+            Tile tile = tileFrame.getTile();
+            int tileindex = tile.getTileIndex();
+            if (tile.hasNTilesInDirection(shipType.getSize() - 1, direction)) {
+                for (int i = 0; i < shipType.getSize(); i++) {
+                    TileSquare tileSquareToSelect = tilesToSquares.get(new Tile(tileindex));
+                    tileSquareToSelect.setSelected(true);
+                    tilesSelectedForShip.add(tileSquareToSelect);
+                    System.out.println((shipType.getSize() - i) + "tiles left to select");
+                    int newIndex = tile.getNextTileIndex(direction);
+                    if (newIndex != -1) {
+                        tileindex = newIndex;
+                    } else {
+                        break;
+                    }
+                } // can only enter when
+                // can only click if number is matching
+            }
+            repaint();
         }
+
+        public void deselectShip() {
+            tilesSelectedForShip.forEach(t -> t.setSelected(false));
+            tilesSelectedForShip.clear();
+        }
+
+        public void verifyShip(Ship.Type type) {
+            if (tilesSelectedForShip.size() == type.getSize()) {
+                List<Tile> tiles = tilesSelectedForShip.stream().map(TileSquare::getTile).collect(Collectors.toList());
+                tilesSelectedForShip.stream().forEach(TileSquare::placeShip);
+                List<Integer> tileIndicies = tiles.stream().map(Tile::getTileIndex).collect(Collectors.toList());
+                Ship s = new Ship(type, tileIndicies);
+                board.addShip(s);
+                deselectShip();
+                // rendering can come from board?
+                repaint();
+
+            }
+
+        }
+
     }
 
     // two different classes...
-    public void deselectShip() {
-        tilesSelectedForShip.forEach(t -> t.setSelected(false));
-        tilesSelectedForShip.clear();
-    }
 
-    public void verifyShip(Ship.Type type) {
-        if (tilesSelectedForShip.size() == type.getSize()) {
-            List<Tile> tiles = tilesSelectedForShip.stream().map(TileSquare::getTile).collect(Collectors.toList());
-            List<Integer> tileIndicies = tiles.stream().map(Tile::getTileIndex).collect(Collectors.toList());
-            Ship s = new Ship(type, tileIndicies);
-            board.addShip(s);
-            // rendering can come from board?
-        }
-    }
+
+
 
 /*
     public void selectAShip(TileSquare tileFrame, Ship.Type shipType) {

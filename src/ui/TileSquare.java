@@ -12,6 +12,7 @@ public class TileSquare extends JButton {
 
     private Tile tile;
     private boolean selected;
+    private boolean hasShip;
     //private BoardFrame board;
     // just render based on status
 
@@ -42,6 +43,14 @@ public class TileSquare extends JButton {
         repaint();
     }
 
+    public void placeShip() {
+        this.hasShip = true;
+    }
+
+    public void removeShip() {
+        this.hasShip = true;
+    }
+
     @Override
     public void paintComponent(Graphics g)
     {
@@ -51,6 +60,9 @@ public class TileSquare extends JButton {
             g.fillRect(0, 0, getWidth(), getHeight());
         } else if (tile.getStatus() == Tile.Status.MISS) {
             g.setColor(Color.blue);
+            g.fillRect(0, 0, getWidth(), getHeight());
+        } else if (hasShip) { // TODO this is janky and bad
+            g.setColor(Color.DARK_GRAY);
             g.fillRect(0, 0, getWidth(), getHeight());
         } else if (selected) {
             g.setColor(Color.GREEN);

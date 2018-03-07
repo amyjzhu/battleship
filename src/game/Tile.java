@@ -12,7 +12,7 @@ public class Tile {
         UP,
         DOWN,
         LEFT,
-        RIGHT
+        Direction, RIGHT
     }
 
     Status status;
@@ -71,7 +71,7 @@ public class Tile {
     }
 
     public boolean hasNTilesInDirection(int n, Direction direction) {
-        return canGetAdjacentTile(direction) && hasNTilesInDirection(n-1, direction);
+        return (n == 0) || (canGetAdjacentTile(direction) && hasNTilesInDirection(n-1, direction));
     }
 
 
