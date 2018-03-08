@@ -1,6 +1,7 @@
 
 package game.player;
 
+import game.Board;
 import game.Game;
 
 import java.util.Random;
@@ -40,6 +41,10 @@ public class ComputerPlayer extends Player {
     // TODO better AI
     // TODO edge case - every board filled?
     public void makeGuess() {
+        makeGuess(board);
+    }
+
+    public static void makeGuess(Board board) {
         int boardSize = Game.BOARD_SIZE * Game.BOARD_SIZE;
         boolean success = false;
         int numFailures = 0;

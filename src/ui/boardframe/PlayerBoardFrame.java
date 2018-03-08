@@ -1,82 +1,45 @@
-package ui;
+package ui.boardframe;
 
 import game.Board;
-import game.Game;
 import game.Ship;
 import game.Tile;
+import ui.TileSquare;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by gijin on 2018-03-03.
+ * Created by gijin on 2018-03-07.
  */
-public class BoardFrame extends JPanel {
+public class PlayerBoardFrame extends BoardFrame {
 
-    private static final int HGAP = 2;
-    private static final int VGAP = 2;
-
-    private Board board;
-    private List<TileSquare> tiles;
-    private Map<Tile, TileSquare> tilesToSquares;
-    private TileSquare tileMarkedForAttack;
+    TileSelectionHandler mouseHandler;
     private List<TileSquare> tilesSelectedForShip = new ArrayList<>();
-    private boolean clickable;
-    private boolean isSetup = true;
-    private TileSelectionHandler mouseHandler;
 
-    // TODO polymorphism?
-
-    // represent a board
-    public BoardFrame(Board thisBoard) {
-        board = thisBoard;
-        this.setLayout(new GridLayout(Game.BOARD_SIZE, Game.BOARD_SIZE, HGAP, VGAP));
-
-        //tiles = Arrays.stream(board.getTiles()).map(TileSquare::new).collect(Collectors.toList());
-        tiles = new ArrayList<>();
-        tilesToSquares = new HashMap<>();
+    public PlayerBoardFrame(Board board) {
+        super(board);
         mouseHandler = new TileSelectionHandler();
-        Arrays.stream(board.getTiles()).forEach(tile -> {
-            //tileSquare.addBoardFrame(this);
-            TileSquare tileSquare = new TileSquare(tile);
-            this.add(tileSquare);
-            tilesToSquares.put(tile, tileSquare);
-            tileSquare.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    attackHandler(tileSquare);
-                }}); // want tiles to be listenning for attacks but only if it's the right turn // should also have an ATTACK button
-            tileSquare.addMouseListener(mouseHandler);
-
-        });
+        tiles.stream().forEach(tileSquare ->
+            tileSquare.addMouseListener(mouseHandler));
 
         addMouseListener(mouseHandler);
     }
 
-    public void attackHandler(TileSquare tileSquare) {
-        if (clickable) {
-            tileSquare.setSelected(true);
-            if (tileMarkedForAttack != null) {
-                tileMarkedForAttack.setSelected(false);
-            }
-            tileMarkedForAttack = tileSquare;
-        }
-    }
-
-    public void selectionHandler(TileSquare tileSquare) {
-        // get the next size and highlight
-
-    }
-
     public void disableSelection() {
         mouseHandler.disableSelection();
+    }
+
+    public void turn() {
+        // hm
+        // needs to wait until your selection
+        // call
     }
 
     private class TileSelectionHandler implements MouseListener {
@@ -87,6 +50,7 @@ public class BoardFrame extends JPanel {
 
         public void disableSelection() {
             selectionTime = false;
+            isSetup = false;
         }
 
         private void swapDirection() {
@@ -147,9 +111,7 @@ public class BoardFrame extends JPanel {
             }
         }
 
-
         public void selectAShip(TileSquare tileFrame, Ship.Type shipType) {
-            // vertical or horiztonal...
             Tile tile = tileFrame.getTile();
             int tileindex = tile.getTileIndex();
             if (tile.hasNTilesInDirection(shipType.getSize() - 1, direction)) {
@@ -163,7 +125,7 @@ public class BoardFrame extends JPanel {
                         tileindex = newIndex;
                     } else {
                         break;
-                    }
+                    } // TODO not "selecting" right number of blocks? although all rendered
                 } // can only enter when
                 // can only click if number is matching
             }
@@ -185,66 +147,7 @@ public class BoardFrame extends JPanel {
                 deselectShip();
                 // rendering can come from board?
                 repaint();
-
             }
-
         }
-
-    }
-
-    // two different classes...
-
-
-
-
-/*
-    public void selectAShip(TileSquare tileFrame, Ship.Type shipType) {
-        // vertical or horiztonal...
-        List<Tile> selectedTiles = new ArrayList<>();
-        Tile tile = tileFrame.getTile();
-        int tileindex = tile.getTileIndex();
-        for (int i = 0; i < shipType.getSize() ; i++) {
-            if (tile.canGetAdjacentTile(Tile.Direction.DOWN)) { // toggle with rclikc
-                tileFrame.setSelected(true);
-
-// hover and click
-                selectedTiles.add(tile);
-            }
-        } // can only enter when
-    }*/
-
-    public boolean isSetup() {
-        return isSetup;
-    }
-
-    public void setSetup(boolean setup) {
-        isSetup = setup;
-    }
-
-    public void setIsClickable(boolean option) {
-        clickable = option;
-    }
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public TileSquare getTileMarkedForAttack() {
-        return tileMarkedForAttack;
-    }
-
-    public void setTileMarkedForAttack(TileSquare ts) {
-        this.tileMarkedForAttack = ts;
-    }
-
-    public void resetTileForAttack() {
-        if (tileMarkedForAttack != null) {
-            tileMarkedForAttack.setSelected(false);
-        }
-        tileMarkedForAttack = null;
-    }
-
-    public void executeHit() {
-        board.hit(tileMarkedForAttack.getTile());
     }
 }

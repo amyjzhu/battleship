@@ -1,7 +1,10 @@
 package ui;
 
-import game.Board;
 import game.Game;
+import game.player.Player;
+import ui.boardframe.BoardFrame;
+import ui.boardframe.ComputerBoardFrame;
+import ui.boardframe.PlayerBoardFrame;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -24,8 +27,8 @@ public class GameFrame extends JFrame {
     public static final Color BUTTON_COLOUR = new Color(232, 220, 239);
     public static final Font BUTTON_FONT = Font.getFont("Comic Sans");
 
-    BoardFrame enemyBoardFrame;
-    BoardFrame yourBoardFrame;
+    ComputerBoardFrame enemyBoardFrame;
+    PlayerBoardFrame yourBoardFrame;
     private Game game;
 
     public GameFrame(Game game) {
@@ -39,13 +42,13 @@ public class GameFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         this.game = game;
-        enemyBoardFrame = createBoardFrame(Game.getPlayerTwo().getBoard(), "Enemy Board");
-        enemyBoardFrame.disableSelection();
+        enemyBoardFrame = createEnemyBoardFrame(Game.getPlayerTwo());
         topLevelPane.add(enemyBoardFrame);
 
         topLevelPane.add(addTitleLabel("Your ships"));
 
-        yourBoardFrame = createBoardFrame(Game.getPlayerOne().getBoard(), "Your Board");
+        yourBoardFrame = createYourBoardFrame(Game.getPlayerOne());
+
         enemyBoardFrame.setIsClickable(true);
         topLevelPane.add(yourBoardFrame);
 
@@ -57,20 +60,30 @@ public class GameFrame extends JFrame {
         setVisible(true);
     }
 
-    public BoardFrame createBoardFrame(Board board, String title) {
-        BoardFrame frame = new BoardFrame(board);
-        frame.getBoard().generateAllShips();
+    public PlayerBoardFrame createYourBoardFrame(Player player) {
+        String title = "Your Board";
+        PlayerBoardFrame frame = new PlayerBoardFrame(player.getBoard());
+        prettifyBoard(frame, title);
+        return frame;
+    }
+
+    public ComputerBoardFrame createEnemyBoardFrame(Player player) {
+        String title = "Enemy Board";
+        ComputerBoardFrame frame = new ComputerBoardFrame(player.getBoard());
+        player.getBoard().generateAllShips(); // TODO this is almost certainly not the right place
+        prettifyBoard(frame, title);
         frame.setIsClickable(false);
+        return frame;
+    }
+
+    private void prettifyBoard(BoardFrame boardFrame, String title) {
         TitledBorder border = new TitledBorder(title);
         border.setTitleJustification(TitledBorder.CENTER);
         border.setTitlePosition(TitledBorder.TOP);
         border.setTitleFont(new Font("Arial", Font.ITALIC, 20));
 
-        frame.setBorder(border);
-
-        return frame;
+        boardFrame.setBorder(border);
     }
-
     public JLabel addTitleLabel(String text) {
         JLabel label = new JLabel();
         label.setText(text);
@@ -111,6 +124,16 @@ public class GameFrame extends JFrame {
         });
 
         return attack;
+    }
+
+    public /*static*/ void startGameplay() {
+        while (!Game.getWinner().isPresent()) {
+            yourBoardFrame.turn();
+            enemyBoardFrame.turn();
+        }
+
+        System.out.println("Game over!");
+        // end game
     }
 
     public static void main(String[] args) {

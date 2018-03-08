@@ -20,7 +20,7 @@ public class Board {
         ships = new ArrayList<>();
     }
 
-    public boolean isPopulated() {
+    public boolean isFullyPopulated() {
         return // DO A REAL CHECK
         ships.size() == Ship.Type.values().length;
     }
