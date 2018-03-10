@@ -30,7 +30,7 @@ public class Board {
     }
 
     public boolean isTileAlreadyHit(int index) {
-        return (boardPieces[index].getStatus() == Tile.Status.NEUTRAL);
+        return (boardPieces[index].getStatus() == Tile.Status.HIT);
     }
 
     public Ship hit(Tile tile) {
@@ -48,6 +48,14 @@ public class Board {
         }
 
         return ship;
+    }
+
+    public Tile getTileWithIndex(int index) {
+        return boardPieces[index];
+    }
+
+    public List<Integer> getAllTilesThatAreNotNeutral() {
+        return Arrays.stream(boardPieces).filter(t -> t.getStatus() != Tile.Status.NEUTRAL).map(Tile::getTileIndex).collect(Collectors.toList());
     }
 
     public boolean allShipsSunk() {

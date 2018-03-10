@@ -30,4 +30,5 @@ public class ShipTest {
             previous = i;
         }
     }
+    // TODO only fire if it's your turn etc
 }

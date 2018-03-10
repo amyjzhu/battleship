@@ -1,6 +1,7 @@
 package ui.boardframe;
 
 import game.Board;
+import game.Game;
 import game.Ship;
 import game.Tile;
 import ui.TileSquare;
@@ -66,6 +67,10 @@ public class PlayerBoardFrame extends BoardFrame {
         public void mouseClicked(MouseEvent e) {
             if (SwingUtilities.isRightMouseButton(e)) {
                 swapDirection();
+                return;
+            }
+
+            if (!(e.getComponent() instanceof TileSquare)) {
                 return;
             }
 

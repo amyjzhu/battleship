@@ -44,7 +44,7 @@ public class ComputerPlayer extends Player {
         makeGuess(board);
     }
 
-    public static void makeGuess(Board board) {
+    public static int makeGuess(Board board) {
         int boardSize = Game.BOARD_SIZE * Game.BOARD_SIZE;
         boolean success = false;
         int numFailures = 0;
@@ -53,14 +53,16 @@ public class ComputerPlayer extends Player {
             int guess = new Random().nextInt(boardSize);
 
             if (numFailures == boardSize) {
-                return;
+                return -1;
             }
             if (board.isTileAlreadyHit(guess)) {
                 numFailures++;
             } else {
                 board.hit(guess);
-                success = true;
+                return guess;
             }
         }
+
+        return -1;
     }
 }

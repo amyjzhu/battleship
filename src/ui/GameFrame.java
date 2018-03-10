@@ -31,6 +31,9 @@ public class GameFrame extends JFrame {
     PlayerBoardFrame yourBoardFrame;
     private Game game;
 
+    // yeah so this isn't safe, but I'll refactor later
+    private static GameFrame thisGameFrame;
+
     public GameFrame(Game game) {
         JPanel topLevelPane = new JPanel();
         topLevelPane.setLayout(new BoxLayout(topLevelPane, BoxLayout.Y_AXIS));
@@ -58,6 +61,7 @@ public class GameFrame extends JFrame {
         this.add(topLevelPane);
 
         setVisible(true);
+        thisGameFrame = this;
     }
 
     public PlayerBoardFrame createYourBoardFrame(Player player) {
@@ -108,13 +112,15 @@ public class GameFrame extends JFrame {
         attack.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (game.isItPlayerOneTurn()) {
+                if (Game.isItPlayerOneTurn()) {
                     TileSquare tile = enemyBoardFrame.getTileMarkedForAttack();
                     // this is stupid TODO and make sure to render based on tile
                     // TODO only let the button be highlighted during turn
                     if (tile != null) {
                         enemyBoardFrame.executeHit();
                         System.out.println(tile);
+                        Game.switchTurns();
+                        enemyBoardFrame.turn(yourBoardFrame);
                     } else {
                         System.out.println("null tilesqr");
                     }
@@ -126,15 +132,6 @@ public class GameFrame extends JFrame {
         return attack;
     }
 
-    public /*static*/ void startGameplay() {
-        while (!Game.getWinner().isPresent()) {
-            yourBoardFrame.turn();
-            enemyBoardFrame.turn();
-        }
-
-        System.out.println("Game over!");
-        // end game
-    }
 
     public static void main(String[] args) {
         new GameFrame(new Game());

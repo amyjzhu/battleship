@@ -1,6 +1,8 @@
 package ui.boardframe;
 
 import game.Board;
+import game.Game;
+import game.Tile;
 import game.player.ComputerPlayer;
 import ui.TileSquare;
 
@@ -38,10 +40,22 @@ public class ComputerBoardFrame extends BoardFrame {
         clickable = option;
     }
 
-    public void turn() {
+    public void turn(BoardFrame boardFrame) {
         // make random guess
+        System.out.println("Enemy turn!");
         clickable = false;
-        ComputerPlayer.makeGuess(board);
+    /*    try {
+            Thread.sleep(60);
+        } catch (InterruptedException e) {
+            // doesn't matter, do nothing
+        }*/
+        int guess = ComputerPlayer.makeGuess(boardFrame.getBoard());
+        while (boardFrame.getBoard().getTileWithIndex(guess).getStatus() == Tile.Status.NEUTRAL) {
+            // stall
+        }
+        System.out.println(boardFrame.getBoard().getAllTilesThatAreNotNeutral());
+        Game.switchTurns();
+        repaint();
         clickable = true;
     }
 }
