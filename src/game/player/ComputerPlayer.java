@@ -43,7 +43,6 @@ public class ComputerPlayer extends Player {
     public void makeGuess() {
         makeGuess(board);
     }
-
     public static int makeGuess(Board board) {
         int boardSize = Game.BOARD_SIZE * Game.BOARD_SIZE;
         boolean success = false;
