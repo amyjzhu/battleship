@@ -70,21 +70,4 @@ public class TileSquare extends JButton {
         }
     }
 
-    /*
-    @Override
-    public void paint(Graphics g)
-    {
-        Graphics2D g2 = (Graphics2D) g.create();
-        if (selected) {
-            g2.setColor(Color.GREEN);
-            g.fillRect(0, 0, getWidth(), getHeight()); // hmm
-        }
-        super.paintComponent(g2);
-        g2.dispose();
-    }*/
-
-    /*
-    public void addBoardFrame(BoardFrame boardFrame) {
-        board = boardFrame;
-    }*/
 }

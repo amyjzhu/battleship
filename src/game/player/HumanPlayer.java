@@ -16,10 +16,6 @@ public class HumanPlayer extends Player {
 
     }
 
-    public void turn() {
-
-    }
-
     @Override
     public void getHit(int hit) {
 

@@ -23,21 +23,17 @@ public class ComputerBoardFrame extends BoardFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 attackHandler(tileSquare);
-            }})); // want tiles to be listenning for attacks but only if it's the right turn // should also have an ATTACK button
+            }}));
     }
 
     public void attackHandler(TileSquare tileSquare) {
-        if (clickable) {
+        if (!Game.inSetup()) {
             tileSquare.setSelected(true);
             if (tileMarkedForAttack != null) {
                 tileMarkedForAttack.setSelected(false);
             }
             tileMarkedForAttack = tileSquare;
         }
-    }
-
-    public void setIsClickable(boolean option) {
-        clickable = option;
     }
 
     public void turn(BoardFrame boardFrame) {

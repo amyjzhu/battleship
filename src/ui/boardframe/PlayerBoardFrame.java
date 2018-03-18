@@ -33,16 +33,6 @@ public class PlayerBoardFrame extends BoardFrame {
         addMouseListener(mouseHandler);
     }
 
-    public void disableSelection() {
-        mouseHandler.disableSelection();
-    }
-
-    public void turn() {
-        // hm
-        // needs to wait until your selection
-        // call
-    }
-
     private class TileSelectionHandler implements MouseListener {
 
         private boolean selectionTime = true;
@@ -52,6 +42,7 @@ public class PlayerBoardFrame extends BoardFrame {
         public void disableSelection() {
             selectionTime = false;
             isSetup = false;
+            Game.setPhase(Game.Phase.PLAY);
         }
 
         private void swapDirection() {
@@ -102,7 +93,7 @@ public class PlayerBoardFrame extends BoardFrame {
             if (selectionTime) {
 
                 Component component = e.getComponent();
-                if (component instanceof TileSquare) { //make sure it's this board's tile square also!
+                if (component instanceof TileSquare) {
                     selectAShip((TileSquare) component, types.get(0));
                 }
             }
@@ -110,7 +101,6 @@ public class PlayerBoardFrame extends BoardFrame {
 
         @Override
         public void mouseExited(MouseEvent e) {
-            System.out.println("mouseout!!");
             if (selectionTime) {
                 deselectShip();
             }

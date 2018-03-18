@@ -52,15 +52,6 @@ public class Game {
         playerTwo.setTurn(false);
     }
 
-    public static void arrangeBoard() {
-        // get a list of pieces
-        playerOne.setTurn(true);
-    }
-
-    public static void runRound() {
-
-    }
-
     public static void switchTurns() {
         if (turnNumber > Ship.totalNumShipTiles()) {
             Optional<Player> potentialWinner = getWinner();

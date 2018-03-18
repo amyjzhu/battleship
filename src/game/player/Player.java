@@ -10,10 +10,6 @@ public abstract class Player {
     protected Board board;
     protected boolean isTurn;
 
-    public enum Stage {
-        GUESS,
-    }
-
     public Player() {
         board = new Board();
     }

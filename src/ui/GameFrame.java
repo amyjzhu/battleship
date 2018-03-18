@@ -52,9 +52,7 @@ public class GameFrame extends JFrame {
 
         yourBoardFrame = createYourBoardFrame(Game.getPlayerOne());
 
-        enemyBoardFrame.setIsClickable(true);
         topLevelPane.add(yourBoardFrame);
-
 
         topLevelPane.add(makeAttackButton());
 
@@ -74,9 +72,7 @@ public class GameFrame extends JFrame {
     public ComputerBoardFrame createEnemyBoardFrame(Player player) {
         String title = "Enemy Board";
         ComputerBoardFrame frame = new ComputerBoardFrame(player.getBoard());
-        player.getBoard().generateAllShips(); // TODO this is almost certainly not the right place
         prettifyBoard(frame, title);
-        frame.setIsClickable(false);
         return frame;
     }
 

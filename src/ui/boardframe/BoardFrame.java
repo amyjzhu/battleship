@@ -43,25 +43,6 @@ public class BoardFrame extends JPanel {
         });
     }
 
-
-    public void selectionHandler(TileSquare tileSquare) {
-        // get the next size and highlight
-
-    }
-
-    public void doEnemyTurn() {
-
-        // set it to be your turn
-    }
-
-    public boolean isSetup() {
-        return isSetup;
-    }
-
-    public void setSetup(boolean setup) {
-        isSetup = setup;
-    }
-
     public Board getBoard() {
         return board;
     }
